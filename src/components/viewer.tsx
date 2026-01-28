@@ -1,4 +1,4 @@
-import { useCount } from "../store/customCount";
+import { useCount } from "../store/count";
 
 export default function Viewer() {
   // const { count } = useCountStore();
