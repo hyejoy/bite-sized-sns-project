@@ -1,11 +1,15 @@
 import { useState } from "react";
 import "./App.css";
+import { Route, Routes } from "react-router";
+import CounterPage from "./pages/counter-page";
+import IndexPage from "./pages/index-page";
 
 function App() {
   return (
-    <>
-      <div>hello world</div>
-    </>
+    <Routes>
+      <Route path="/" element={<IndexPage />} />
+      <Route path="/counter" element={<CounterPage />} />
+    </Routes>
   );
 }
 
