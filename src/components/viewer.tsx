@@ -1,7 +1,6 @@
 import { useCount } from "../store/count";
 
-export default function Viewer() {
-  // const { count } = useCountStore();
+export default function viewer() {
   const count = useCount();
   return (
     <>

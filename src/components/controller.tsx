@@ -1,12 +1,11 @@
-import { useDecreaseCount, useIncreseCount } from "../store/count";
+import { useCountActions } from "../store/count";
 
 export default function Controller() {
-  const increase = useIncreseCount();
-  const decrease = useDecreaseCount();
+  const { increaseCount, decreaseCount } = useCountActions();
   return (
     <div>
-      <button onClick={increase}>+</button>
-      <button onClick={decrease}>-</button>
+      <button onClick={increaseCount}>+</button>
+      <button onClick={decreaseCount}>-</button>
     </div>
   );
 }

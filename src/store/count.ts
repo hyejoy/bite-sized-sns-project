@@ -1,95 +1,101 @@
 import { create } from "zustand"; // zustand store 생성하는 함수
-import { combine } from "zustand/middleware";
+import {
+  combine,
+  persist,
+  subscribeWithSelector,
+  createJSONStorage,
+  devtools,
+} from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-/**
- * 📃 복습
- * get : 객체 스토어를 그대로 반환하는 역할
- *               ⌈------------여기 부분 객체 스토어-----------------⌉
- * create(() => ({ count: 0, increse: () => {}, decrease: () => {} }));
- * set : 인수로 전달한 값으로 현재 스토어를 업데이트 시켜주는 함수
- */
 
 /**
- * 📝 combine
- *  - state는 state끼리 action은 action함수끼리 분리할 수 있도록 결합시킬 수 있도록 도와줌
- *  - store의 타입을 자동 추론
- */
-
-/**
- * @param count : store에 포함될 state
- * @param callback : set,get을 받아와 ({액션 함수들을 포함한 객체를 리턴})
- *  conbine으로 만든 스토어 객체는
- *  1. 첫번째 인수로 전달한 count 에 보관
- *  2. 두번째 인수로 전달한 콜백함수의 리턴값들 (actions 객체)를 포함
+ * @persist 미들웨어 설정 가이드
+ * * 1. 설정 방법: 두 번째 인수로 옵션 객체를 전달합니다.
+ * 2. name 속성: 브라우저 로컬 스토리지에 저장될 고유 키(Key) 이름을 지정합니다.
+ * 3. 자동 저장: 설정 시 스토어의 상태(State)가 로컬 스토리지에 자동으로 동기화됩니다.
+ * 4. 데이터 유지: 페이지 새로고침 시에도 스토리지에 저장된 값이 복구되어 상태가 유지됩니다.
+ * * ⚠️ 주의사항 및 팁
+ * - 함수(Actions)는 JSON 파싱이 불가능하므로 스토리지에 저장되지 않습니다.
  *
- * @description combine 미들웨어를 이용하여 state와 액션 함수들을 분리해 생성하는 이유는
- * 첫번째 인수로 전달한 state 타입이 자동으로 추론되기 때문이다.
- */
-
-export const useCountStore_Combine = create(
-  combine({ count: 0 }, (set, get) => {
-    return {
-      actions: {
-        icreaseCount: () => {
-          set((state) => ({ count: state.count + 1 })); // state type 자동 추론
-        },
-        decreaseCount: () => {
-          set((state) => ({ count: state.count - 1 }));
-        },
-      },
-    };
-  }),
-);
-
-/**
- * 📝 Immer
- *  - npm i Immer
- *  - 중첩된 객체의 데이터를 수정할 때 복잡해지는 코드를 단순화 시킬 수 있음
- *  - immer가 combine 함수를 전체 다 감싸도록 작성
- */
-
-/**
- * @param combine : combine 함수의 호출 결과값 전달
- * @description 업데이트를 보다 편리하게 할 수 있도록 불변성을 관리해주는 immer
- * 복잡한 state를 다룰때 진가가 잘 드러남
+ *
+ * - 📝[partialize] 옵션 :
+ * 스토어의 전체 데이터 중 '저장이 필요한 상태값'만 선택하여 보관할 때 사용
+ * (예: selector 함수를 통해 특정 상태만 명시적으로 반환)
+ *
+ * - 📝[storage] 옵션 : 로컬스토리지 대신 세션 스토리지의 데이터를 보관하도록 하는방법
+ *   1) createJSONStorage import
+ *   2) createJSONStorage 콜백함수로 sessionStorage 반환
+ *
+ * - 📝[devtools] 옵션 : 개발자 도구를 통해 스토어를 디버깅할 수 있도록 도와주는 옵션
+ *   1) create 함수를 devtools로 감싸고
+ *   2) 두번째 인자로, name 속성에 현재 스토어의 이름을 넣어주면된다.
+ *   3) Redux DevTools 크롬 확장 프로그램 설치 필수
+ *
+ * ⭐ zustand 미들웨어는 감싸는 순서가 중요함
+ *    combine → immer → subscribeWithSelector → persists → devtools
  */
 
 export const useCountStore = create(
-  immer(
-    combine({ count: 0 }, (set, get) => {
-      return {
-        actions: {
-          icreaseCount: () => {
-            set((state) => {
-              state.count += 1;
-            });
-          },
-          decreaseCount: () => {
-            set((state) => {
-              state.count -= 1;
-            });
-          },
-        },
-      };
-    }),
+  devtools(
+    persist(
+      subscribeWithSelector(
+        immer(
+          combine({ count: 0 }, (set, get) => {
+            return {
+              actions: {
+                increaseCount: () => {
+                  set((state) => {
+                    state.count += 1;
+                  });
+                },
+                decreaseCount: () => {
+                  set((state) => {
+                    state.count -= 1;
+                  });
+                },
+              },
+            };
+          }),
+        ),
+      ),
+      {
+        name: "countStore", // 로컬 스토리지에 저장할 key 값
+        partialize: (store) => ({
+          count: store.count, //count값만 로컬 스토리지에 저장함 (그외의 값은 저장 X)
+        }),
+        storage: createJSONStorage(() => sessionStorage),
+      },
+    ),
+    {
+      name: "countStore",
+    },
   ),
 );
 
+// 첫번째 인수로는 어떤 값을 구독할 건지, 셀렉터 함수를 넣어준다.
+// 아래 코드는 store.count를 구독하고,ㅡ 해당 값이 변경될때마다,
+// 두번째 인수로 넣어준 콜백함수를 실행시킨다.
+useCountStore.subscribe(
+  (store) => store.count,
+  (count, prevCount) => {
+    // 구독한 값이 첫번째 인자로 들어오고, 두번째 인자로는 이전의 값이 들어옴
+    //Listner 함수
+    console.log(count);
+    console.log(prevCount);
+
+    // store 특정값을 업데이트 하는것도 가능함 → getState 함수 사용
+    const store = useCountStore.getState(); // 현재 스토어의 값을 반환해줌
+    useCountStore.setState((store) => ({ name: "변경돼요" })); // 원하는 코드 실행
+  },
+);
 /**
- * 📝 각 스테이트와 액션을 꺼내오는 전용 커스텀 훅들을 만들 수 있음
- *  이렇게하면 하나의 파일만 수정사항을 처리할 수 있기때문에 유리한 구조로 코드를 작성 할 수 있음
+ * 📝  이 미들웨어는 사용자가 로그아웃을 해서 세션을 보관하는 스토어의 값이 바뀌었을때
+ *      로그인페이지로 보내게 하는 사이드 이펙트를 관리할 때 종종 사용이 됨
  */
 export const useCount = () => {
-  const count = useCountStore((store) => store.count);
-  return count;
+  return useCountStore((state) => state.count);
 };
 
-export const useIncreseCount = () => {
-  const increase = useCountStore((store) => store.actions.icreaseCount);
-  return increase;
-};
-
-export const useDecreaseCount = () => {
-  const decrease = useCountStore((store) => store.actions.decreaseCount);
-  return decrease;
+export const useCountActions = () => {
+  return useCountStore((state) => state.actions);
 };
