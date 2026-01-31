@@ -1,7 +1,11 @@
+import Controller from "../components/controller";
+import Viewer from "../components/viewer";
+
 export default function IndexPage() {
   return (
     <>
-      <h1>index.page Component</h1>
+      <Viewer />
+      <Controller />
     </>
   );
 }
