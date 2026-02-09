@@ -1,20 +1,29 @@
+import { Outlet, Route, Routes } from 'react-router';
 import './App.css';
-import { Button } from '@/components/ui/button';
-import { cn } from './lib/utils'; // 샤드시엔에서 설치된 유틸함수
-export default function App() {
-  const isActive = true;
-  return (
-    <>
-      <Button>샤드시엔 버튼 (shadcn/ui)</Button>
-      {/* 📌 샤드시엔 index.css 파일의 색상이 자동으로 css변수로 설정되고 tailwindcss에서 사용할 수 있음*/}
-      <div className="text-primary">Primary</div>
-      <div className="text-muted">Muted</div>
-      <div className="text-destructive">Destructive</div>
+import IndexPage from './pages/IndexPage';
+import SignIn from './pages/SignIn';
+import Signup from './pages/Signup';
 
-      {/* 조건부로 className을 적용해야 할때 cn 유틸 함수를 이용하면 편리함 */}
-      <div className={cn(isActive ? 'text-green-500' : 'text-red-500')}>
-        isActive
-      </div>
-    </>
+export function AuthLayout() {
+  return (
+    <div>
+      <header>Header</header>
+      {/* Outlet : 공통 레이아웃 children 랜더링되는 위치 표시 */}
+      <Outlet />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<IndexPage />} />
+
+      {/* 동일한 레이아웃 */}
+      <Route element={<AuthLayout />}>
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<Signup />} />
+      </Route>
+    </Routes>
   );
 }
