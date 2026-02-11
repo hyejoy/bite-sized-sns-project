@@ -1,17 +1,14 @@
 import TodoEditor from '@/components/todo-list/TodoEditor';
 import TodoItem from '@/components/todo-list/TodoItem';
+import { useTodos } from '@/store/todosStore';
 
-const dummyTodos = [
-  { id: '1', content: 'todo1' },
-  { id: '2', content: 'todo2' },
-  { id: '3', content: 'todo3' },
-];
 export default function TodoListPage() {
+  const todos = useTodos();
   return (
     <div className="flex flex-col gap-5 p-5">
       <h1 className="text-2xl font-bold">TodoListPage Component</h1>
       <TodoEditor />
-      {dummyTodos.map((todo) => (
+      {todos.map((todo) => (
         <TodoItem key={todo.id} {...todo} />
       ))}
     </div>
