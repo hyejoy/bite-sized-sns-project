@@ -9,6 +9,7 @@
     }
   ],
   "compilerOptions": {
+    "moduleResolution": "bundler", // 또는 "node"
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"] // 경로 별칭 옵션
