@@ -7,6 +7,7 @@ export function useTodoDataById(id: number) {
     queryKey: ['todos', id],
 
     staleTime: 5000, //stale까지 되는 시간
+    gcTime: 5000,
 
     // 데이터가 stale한 상태가 되어도 내가 원하는 시점에 리패칭되도록 설정 하는 옵션들
     // refetchInterval: 1000, → 1초마다 리패칭
