@@ -1,6 +1,6 @@
 import TodoEditor from '@/components/todo-list/TodoEditor';
 import TodoItem from '@/components/todo-list/TodoItem';
-import { useTodosData } from '@/hooks/quries/useTodos.data';
+import { useTodosData } from '@/hooks/quries/useTodosData';
 
 export default function TodoListPage() {
   /**
