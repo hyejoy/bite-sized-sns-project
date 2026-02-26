@@ -5,7 +5,6 @@ import SignIn from './pages/SignIn';
 import Signup from './pages/Signup';
 import CounterPage from './pages/CounterPage';
 import TodoListPage from './pages/TodoListPage';
-import TodoDetailPage from '@/pages/TodoDetailPage';
 
 export function AuthLayout() {
   return (
@@ -23,7 +22,6 @@ export default function App() {
       <Route path="/" element={<IndexPage />} />
       <Route path="/counter" element={<CounterPage />} />
       <Route path="/todolist" element={<TodoListPage />} />
-      <Route path="/todolist/:id" element={<TodoDetailPage />} />
 
       {/* 동일한 레이아웃 */}
       <Route element={<AuthLayout />}>

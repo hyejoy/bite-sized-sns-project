@@ -9,7 +9,7 @@ const initalState: {
   todos: [],
 };
 
-const useTodoStore = create(
+export const TodosStore = create(
   immer(
     combine(initalState, (set) => ({
       actions: {
@@ -17,7 +17,7 @@ const useTodoStore = create(
           set((state) => {
             state.todos.push({
               id: new Date().getTime(),
-              content,
+              content: content,
             });
           });
         },
@@ -31,12 +31,12 @@ const useTodoStore = create(
   )
 );
 
-/** custom hook */
-
 export const useTodos = () => {
-  return useTodoStore((store) => store.todos);
+  const todos = TodosStore((state) => state.todos);
+  return todos;
 };
 
 export const useTodosActions = () => {
-  return useTodoStore((state) => state.actions);
+  const actions = TodosStore((state) => state.actions);
+  return actions;
 };
