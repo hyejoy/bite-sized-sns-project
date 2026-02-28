@@ -1,17 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useTodosActions } from '@/store/todosStore';
 import { useState } from 'react';
+import { useCreateTodoMutation } from './../../hooks/mutations/useCreateTodoMutation';
 
 export default function TodoEditor() {
   const [content, setContent] = useState('');
 
-  const { createTodo } = useTodosActions();
-
+  const { mutate, isPending } = useCreateTodoMutation();
   const handleAddClick = (e: React.FormEvent) => {
-    e.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+    e.preventDefault();
     if (content.trim() === '') return;
-    createTodo(content);
+    mutate(content); // 추가버튼을 누르면 mutate함수가 실행되면서 결과적으로 createTodo함수가 실행됨
     setContent('');
   };
 
@@ -23,7 +22,9 @@ export default function TodoEditor() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-        <Button type="submit">추가</Button>
+        <Button disabled={isPending} type="submit">
+          추가
+        </Button>
       </div>
     </form>
   );
