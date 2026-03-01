@@ -1,19 +1,9 @@
 {
   "todos": [
     {
-      "id": 1,
-      "content": "Todo 1",
-      "isDone": false
-    },
-    {
-      "id": 2,
-      "content": "Todo 2",
-      "isDone": true
-    },
-    {
-      "id": 3,
-      "content": "Todo 3",
-      "isDone": true
+      "content": "안녕하세요",
+      "isDone": false,
+      "id": 2
     }
   ]
 }
