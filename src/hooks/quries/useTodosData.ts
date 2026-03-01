@@ -1,6 +1,7 @@
 import { fetchTodos } from '@/api/fetchTodos';
 import { QUERY_KEYS } from '@/lib/constants';
-import { useQuery } from '@tanstack/react-query';
+import type { Todo } from '@/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 // useTodoData를 호출하면 자동으로 fetchTodos가 실행되어
 // 해당 요청의 상태값을 어디든지 쓸 수 있게 된다.
@@ -12,8 +13,17 @@ import { useQuery } from '@tanstack/react-query';
 // UseQuery훅은 마운트 되었을때 queryFn으로 설정한 fetch함수를 자동으로 호출함
 // 알아서 data, isLoading, error 객체를 제공해줌
 export function useTodosData() {
+  const queryClient = useQueryClient();
+
   return useQuery({
-    queryFn: fetchTodos,
+    queryFn: async () => {
+      const todos = await fetchTodos();
+
+      todos.forEach((todo) => {
+        queryClient.setQueryData<Todo>(QUERY_KEYS.todo.detail(todo.id), todo);
+      });
+      return todos.map((todo) => todo.id); // todo의 id값만 따로 모아둔 배열이 캐시데이터로 보관이 됨
+    },
     queryKey: QUERY_KEYS.todo.list,
     // retry: 0,
   });

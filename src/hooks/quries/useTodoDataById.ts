@@ -2,11 +2,11 @@ import { fetchTodoById } from '@/api/fetchTodoById';
 import { QUERY_KEYS } from '@/lib/constants';
 import { useQuery } from '@tanstack/react-query';
 
-export function useTodoDataById(id: string) {
+export function useTodoDataById(id: string, type: 'LIST' | 'DETAIL') {
   return useQuery({
     queryFn: () => fetchTodoById(id),
     queryKey: QUERY_KEYS.todo.detail(id),
-
+    enabled: type === 'DETAIL', // 디테일 페이지에서만 다시 리패칭 일어나도록
     staleTime: 5000, //stale까지 되는 시간
     gcTime: 5000,
 
