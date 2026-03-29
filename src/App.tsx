@@ -1,16 +1,16 @@
 import { Outlet, Route, Routes } from 'react-router';
 import './App.css';
 import IndexPage from './pages/IndexPage';
-import SignIn from './pages/SignIn';
-import Signup from './pages/Signup';
-import CounterPage from './pages/CounterPage';
-import TodoListPage from './pages/TodoListPage';
+import SignIn from '@/pages/SignIn';
+import Signup from '@/pages/Signup';
+import TodoListPage from '@/pages/TodoListPage';
 
-export function AuthLayout() {
+// signin, signup page 의 공통 layoutPage라고 이해하면됨
+// outlet에 signin signup 컴포넌트가 랜더링됨
+function AuthLayout() {
   return (
     <div>
-      <header>Header</header>
-      {/* Outlet : 공통 레이아웃 children 랜더링되는 위치 표시 */}
+      <header>Auth!</header>
       <Outlet />
     </div>
   );
@@ -20,13 +20,10 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<IndexPage />} />
-      <Route path="/counter" element={<CounterPage />} />
-      <Route path="/todolist" element={<TodoListPage />} />
-
-      {/* 동일한 레이아웃 */}
+      <Route path="/todoList" element={<TodoListPage />} />
       <Route element={<AuthLayout />}>
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<Signup />} />
       </Route>
     </Routes>
   );

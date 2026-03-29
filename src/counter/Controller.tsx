@@ -1,9 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-  useCounterStore,
-  useDecreaseCount,
-  useIncreaseCount,
-} from '@/store/counterStore';
+import { useDecreaseCount, useIncreaseCount } from '@/store/counterStore';
 
 export default function Controller() {
   // const { increase, decrease } = useCounterStore((store) => store.actions);
