@@ -3,27 +3,27 @@ import { create } from 'zustand';
 import { combine } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-const initalState: {
+const initialData: {
   todos: Todo[];
 } = {
   todos: [],
 };
 
-export const TodosStore = create(
+const useTodoStore = create(
   immer(
-    combine(initalState, (set) => ({
+    combine(initialData, (set) => ({
       actions: {
         createTodo: (content: string) => {
           set((state) => {
             state.todos.push({
-              id: new Date().toISOString(),
-              content: content,
+              id: new Date().getTime(),
+              content,
             });
           });
         },
-        deleteTodo: (targetId: string) => {
+        deleteTodo: (id: number) => {
           set((state) => {
-            state.todos = state.todos.filter((todo) => todo.id !== targetId);
+            state.todos = state.todos.filter((todo) => todo.id !== id);
           });
         },
       },
@@ -32,11 +32,11 @@ export const TodosStore = create(
 );
 
 export const useTodos = () => {
-  const todos = TodosStore((state) => state.todos);
+  const todos = useTodoStore((store) => store.todos);
   return todos;
 };
 
-export const useTodosActions = () => {
-  const actions = TodosStore((state) => state.actions);
+export const useTodoActions = () => {
+  const actions = useTodoStore((store) => store.actions);
   return actions;
 };

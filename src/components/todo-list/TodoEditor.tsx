@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useTodosActions } from '@/store/todosStore';
+import { useCreateTodoMutation } from '@/hooks/mutations/use-create-todo-mutation';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 interface InputForm {
@@ -8,19 +8,26 @@ interface InputForm {
 }
 
 export default function TodoEditor() {
+  const { mutate, isPending, isError } = useCreateTodoMutation();
+
   const { register, handleSubmit, resetField } = useForm<InputForm>();
-  const { createTodo } = useTodosActions();
   const onSave: SubmitHandler<InputForm> = (data) => {
-    createTodo(data.content);
+    mutate(data.content);
     resetField('content');
   };
+
+  // 비동기 로딩상태
+  if (isPending) <div>isPending...</div>;
+  if (isError) <div>is Error!!...</div>;
   return (
     <form onSubmit={handleSubmit(onSave)} className="flex gap-2">
       <Input
         {...register('content')}
         placeholder="새로운 할 일을 입력해주세요!"
       />
-      <Button type="submit">추가</Button>
+      <Button disabled={isPending} type="submit">
+        추가
+      </Button>
     </form>
   );
 }
