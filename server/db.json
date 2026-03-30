@@ -3,11 +3,11 @@
     {
       "id": 1,
       "content": "Todo 1",
-      "isDone": true
+      "isDone": false
     },
     {
       "content": "123",
-      "isDone": false,
+      "isDone": true,
       "id": 2
     }
   ]
