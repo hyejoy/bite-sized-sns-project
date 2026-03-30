@@ -7,6 +7,8 @@ export default function TodoItem({ id, content, isDone }: Todo) {
   const { mutate } = useUpdateTodoMutation();
   const handleCheckboxClick = () => {
     mutate({ id, isDone: !isDone });
+
+    // 체크박스 클릭시 네트워크 요청이 성공할거라고 예상하고 낙관적 데이트 실시
   };
   const handleDeleteClick = () => {};
   return (
